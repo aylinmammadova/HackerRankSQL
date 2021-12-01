@@ -52,3 +52,16 @@ JOIN employee e
 ON c.company_code = e.company_code
 GROUP BY c.company_code, c.founder
 ORDER BY SUBSTR(c.company_code, 2);
+
+# 5. Occupations
+Pivot the Occupation column in OCCUPATIONS so that each Name is sorted alphabetically and displayed underneath its corresponding Occupation. 
+The output column headers should be Doctor, Professor, Singer, and Actor, respectively.
+Note: Print NULL when there are no more names corresponding to an occupation.
+SELECT Doctor, Professor, Singer, Actor 
+FROM (SELECT 
+      ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name) as rownumber, name, occupation 
+      FROM occupations) 
+PIVOT 
+(MAX(name) FOR occupation IN ('Doctor' as Doctor,'Professor' as Professor, 'Singer' as Singer, 'Actor' as Actor)) 
+ORDER BY rownumber;
+
