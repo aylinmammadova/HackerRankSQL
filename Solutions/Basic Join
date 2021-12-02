@@ -44,8 +44,41 @@ ORDER BY grades.grade desc, students.name asc;
 Julia just finished conducting a coding contest, and she needs your help assembling the leaderboard! Write a query to print the respective hacker_id and 
 name of hackers who achieved full scores for more than one challenge. Order your output in descending order by the total number of challenges in which 
 the hacker earned a full score. If more than one hacker received full scores in same number of challenges, then sort them by ascending hacker_id.
+SELECT s.hacker_id, h.name
+FROM hackers h
+JOIN submissions s
+ON h.hacker_id = s.hacker_id
+JOIN challenges c
+ON s.challenge_id = c.challenge_id
+JOIN difficulty d
+ON c.difficulty_level = d.difficulty_level
+WHERE s.score = d.score
+GROUP BY s.hacker_id, h.name
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC, s.hacker_id;
 
+# 6. Ollivander's Inventory
+Harry Potter and his friends are at Ollivander's with Ron, finally replacing Charlie's old broken wand.
+Hermione decides the best way to choose is by determining the minimum number of gold galleons needed to buy each non-evil wand of high power and age. 
+Write a query to print the id, age, coins_needed, and power of the wands that Ron's interested in, sorted in order of descending power. 
+If more than one wand has same power, sort the result in order of descending age.
+SELECT a.id, b.age, a.coins_needed, a.power
+FROM wands a
+JOIN wands_property b
+ON a.code = b.code
+JOIN (SELECT age, power, MIN(coins_needed) coins
+     FROM wands A
+     JOIN wands_property B
+     ON A.code = B.code
+     WHERE is_evil = 0
+     GROUP BY age, power) AB
+ON b.age = AB.age AND a.power = AB.power AND a.coins_needed = AB.coins
+ORDER BY a.power DESC, b.age DESC;
 
+# 7. Challenges
+Julia asked her students to create some coding challenges. Write a query to print the hacker_id, name, and the total number of challenges created by each student. 
+Sort your results by the total number of challenges in descending order. If more than one student created the same number of challenges, then sort the result by hacker_id. 
+If more than one student created the same number of challenges and the count is less than the maximum number of challenges created, then exclude those students from the result.
 
 
 
